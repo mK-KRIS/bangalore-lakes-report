@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@400;600&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Calm Harmony -->
-    <!-- Application Structure Plan: A single-page, vertically scrolling application designed to tell a story. It now starts with the 'Crisis at a Glance' section, as the 'About' section was removed. The 'Silent Invaders' section with clickable cards for each species is unchanged. The 'Ripple Effect' section uses a flowchart-style layout to visually connect the problem to its complex impacts. The 'Path to Recovery' section has been updated with a new tab for Sources & Credits, allowing users to explore solutions and the data's origin separately. The footer now contains a simplified credit line and the LinkedIn link. This structure was chosen to transform a dense report into a guided, digestible, and engaging user journey, prioritizing exploration and understanding over a linear, text-heavy format while providing proper attribution. -->
+    <!-- Application Structure Plan: A single-page, vertically scrolling application designed to tell a story. It now starts with the 'Crisis at a Glance' section, as the 'About' section was removed. The 'Silent Invaders' section with clickable cards for each species is unchanged. The 'Ripple Effect' section uses a flowchart-style layout to visually connect the problem to its complex impacts. The 'Path to Recovery' section has a tab for Sources & Credits. The footer now contains a simplified credit line, a LinkedIn link, and a placeholder for the author's image. This structure was chosen to transform a dense report into a guided, digestible, and engaging user journey, prioritizing exploration and understanding over a linear, text-heavy format while providing proper attribution. -->
     <!-- Visualization & Content Choices: 1) Urban Transformation: Goal: Show stark change. Viz: Bar Chart (Chart.js) comparing 1973 vs. 2023. Interaction: Hover tooltips. Justification: Immediate, powerful visual comparison. 2) Invasive Species: Goal: Introduce culprits. Viz: Interactive Cards (HTML/CSS). Interaction: Click to open modal with details. Justification: Breaks down complex table into scannable, user-driven deep dives. 3) Systemic Impacts: Goal: Show interconnectedness. Viz: Flowchart-style diagram (HTML/CSS Flexbox). Interaction: Clickable nodes. Justification: Visually maps cause-and-effect relationships more effectively than text. 4) Solutions: Goal: Organize strategies. Viz: Tabbed Interface (HTML/JS). Interaction: Click to switch content. Justification: Standard UI for segmenting large amounts of information cleanly. 5) Sources: Goal: Provide attribution. Viz: New tab with a list. Interaction: Click to switch to the tab. Justification: Organizes source information cleanly without cluttering the main content. All choices avoid SVG/Mermaid and focus on interactivity to enhance user comprehension. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -164,7 +164,7 @@
                         <div class="species-card bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300" data-species="lettuce">
                             <h4 class="text-xl font-bold mb-2">Pistia stratiotes</h4>
                             <p class="text-sm font-semibold text-gray-500 mb-4">Water Lettuce</p>
-                            <p class="text-gray-600 text-sm mb-4">Another free-floating invasive that contributes to water quality degradation and ecosystem imbalance.</p>
+                            <p class="text-gray-600 text-sm mb-4">Another free-floating invasive that contributes to the degradation of water quality and ecosystem imbalance.</p>
                             <div class="text-center bg-blue-50 p-3 rounded-md">
                                 <p class="text-sm text-blue-800 font-semibold">Ecological Disruption</p>
                                 <p class="text-2xl font-bold text-blue-600">Degrades Water Quality</p>
@@ -320,8 +320,11 @@
 
     <footer class="bg-gray-800 text-white py-8">
         <div class="container mx-auto px-6 text-center">
-            <p class="mb-2">Data compiled by Manub Krishnan E.M., based on research from IISc, Paani.Earth, and others.</p>
-            <a href="https://www.linkedin.com/in/manubkrishnanem" class="inline-block bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-blue-700 transition-colors duration-300 mt-4" target="_blank">
+            <!-- Image placeholder. Replace the src with your image URL. -->
+            <img src="https://placehold.co/100x100/A0AEC0/FFFFFF?text=MK" alt="Manub Krishnan E.M. Profile Picture" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-gray-400 shadow-md">
+            
+            <p class="mb-4">Data compiled by Manub Krishnan E.M., based on research from IISc, Paani.Earth, and others.</p>
+            <a href="https://www.linkedin.com/in/manubkrishnanem" class="inline-block bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-blue-700 transition-colors duration-300" target="_blank">
                 Connect on LinkedIn
             </a>
             <p class="text-sm text-gray-400 mt-4">Disclaimer: This website is for educational purposes only.</p>
