@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Crisis of Bangalore's Lakes: An Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A single-page, vertically scrolling application designed to tell a story. It starts with a high-impact 'Crisis at a Glance' section using a chart to show the dramatic urban shift. It then moves to an interactive 'Silent Invaders' section with clickable cards for each species, allowing users to explore details without being overwhelmed. The 'Ripple Effect' section uses a flowchart-style layout to visually connect the problem to its complex impacts. Finally, the 'Path to Recovery' section uses a tabbed interface to neatly organize solutions. This structure was chosen to transform a dense report into a guided, digestible, and engaging user journey, prioritizing exploration and understanding over a linear, text-heavy format. -->
+    <!-- Visualization & Content Choices: 1) Urban Transformation: Goal: Show stark change. Viz: Bar Chart (Chart.js) comparing 1973 vs. 2023. Interaction: Hover tooltips. Justification: Immediate, powerful visual comparison. 2) Invasive Species: Goal: Introduce culprits. Viz: Interactive Cards (HTML/CSS). Interaction: Click to open modal with details. Justification: Breaks down complex table into scannable, user-driven deep dives. 3) Systemic Impacts: Goal: Show interconnectedness. Viz: Flowchart-style diagram (HTML/CSS Flexbox). Interaction: Clickable nodes. Justification: Visually maps cause-and-effect relationships more effectively than text. 4) Solutions: Goal: Organize strategies. Viz: Tabbed Interface (HTML/JS). Interaction: Click to switch content. Justification: Standard UI for segmenting large amounts of information cleanly. All choices avoid SVG/Mermaid and focus on interactivity to enhance user comprehension. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7;
+            color: #4A4A4A;
+        }
+        h1, h2, h3 {
+            font-family: 'Lora', serif;
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #0B4F6C;
+            border-bottom-color: #0B4F6C;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 50vh;
+            width: 100%;
+            max-width: 800px;
+            max-height: 400px;
+        }
+        .tab-btn.active {
+            background-color: #0B4F6C;
+            color: #FFFFFF;
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">Bangalore's Lakes</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#crisis" class="nav-link pb-1">The Crisis</a>
+                <a href="#invaders" class="nav-link pb-1">The Invaders</a>
+                <a href="#impacts" class="nav-link pb-1">The Impacts</a>
+                <a href="#recovery" class="nav-link pb-1">The Recovery</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#crisis" class="block py-2 px-4 text-sm hover:bg-gray-200">The Crisis</a>
+            <a href="#invaders" class="block py-2 px-4 text-sm hover:bg-gray-200">The Invaders</a>
+            <a href="#impacts" class="block py-2 px-4 text-sm hover:bg-gray-200">The Impacts</a>
+            <a href="#recovery" class="block py-2 px-4 text-sm hover:bg-gray-200">The Recovery</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="crisis" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-800 mb-4">A City's Ecological Collapse</h2>
+                <p class="max-w-3xl mx-auto text-gray-600 mb-12 text-lg">
+                    Once known as the "Garden City," Bangalore has witnessed a staggering transformation. Over the last 50 years, rampant urbanization has decimated its green cover and water bodies, fundamentally altering the city's ability to sustain itself. This section visualizes the dramatic shift from a green oasis to a concrete landscape.
+                </p>
+                <div class="chart-container">
+                    <canvas id="urbanTransformationChart"></canvas>
+                </div>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-2 text-red-600">88% Loss of Vegetation</h3>
+                        <p class="text-gray-600">Green cover plummeted from 68.27% in 1973 to less than 15% today, crippling the city's lungs and biodiversity.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-2 text-blue-600">79% Loss of Water Bodies</h3>
+                        <p class="text-gray-600">The number of lakes fell from over 200 to just 93, with 98% of the remaining lakes encroached upon, severely impacting groundwater recharge.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-2 text-gray-700">1055% Growth in Pavement</h3>
+                        <p class="text-gray-600">Built-up area exploded from 8% to over 93% of the city's landscape, creating a water-scarce "concrete jungle."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="invaders" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-5xl font-bold text-center text-gray-800 mb-4">The Silent Invaders</h2>
+                <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12 text-lg">
+                    The degradation of Bangalore's lakes is accelerated by invasive species, both in the water and on the land. Many were introduced with good intentions but now pose a grave threat. Click on each card to learn more about these key culprits and their specific impacts.
+                </p>
+
+                <div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-700 my-8">Terrestrial Invaders</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="species-card bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300" data-species="prosopis">
+                            <h4 class="text-xl font-bold mb-2">Prosopis juliflora</h4>
+                            <p class="text-sm font-semibold text-gray-500 mb-4">Mesquite</p>
+                            <p class="text-gray-600 text-sm mb-4">A "noxious weed" with a voracious appetite for water, forming dense, impenetrable thickets on lakebeds.</p>
+                            <div class="text-center bg-red-50 p-3 rounded-md">
+                                <p class="text-sm text-red-800 font-semibold">High Water Consumption</p>
+                                <p class="text-2xl font-bold text-red-600">~7 Liters/Day</p>
+                            </div>
+                        </div>
+                        <div class="species-card bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300" data-species="acacia">
+                            <h4 class="text-xl font-bold mb-2">Acacia nilotica</h4>
+                            <p class="text-sm font-semibold text-gray-500 mb-4">Karijali</p>
+                            <p class="text-gray-600 text-sm mb-4">Another "water guzzler" linked to severe declines in groundwater tables across the region.</p>
+                             <div class="text-center bg-red-50 p-3 rounded-md">
+                                <p class="text-sm text-red-800 font-semibold">Severe Hydrological Impact</p>
+                                <p class="text-2xl font-bold text-red-600">Depletes Groundwater</p>
+                            </div>
+                        </div>
+                        <div class="species-card bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300" data-species="eucalyptus">
+                            <h4 class="text-xl font-bold mb-2">Eucalyptus globulus</h4>
+                            <p class="text-sm font-semibold text-gray-500 mb-4">Eucalyptus</p>
+                            <p class="text-gray-600 text-sm mb-4">Known for its extreme water uptake, its roots can reach deep to find water during droughts.</p>
+                             <div class="text-center bg-red-50 p-3 rounded-md">
+                                <p class="text-sm text-red-800 font-semibold">Extreme Water Uptake</p>
+                                <p class="text-2xl font-bold text-red-600">50-90 Liters/Day</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-16">
+                    <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-700 my-8">Aquatic Invaders</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="species-card bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300" data-species="hyacinth">
+                            <h4 class="text-xl font-bold mb-2">Eichhornia crassipes</h4>
+                            <p class="text-sm font-semibold text-gray-500 mb-4">Water Hyacinth</p>
+                            <p class="text-gray-600 text-sm mb-4">Forms dense, floating mats that choke lakes, blocking sunlight and depleting oxygen for aquatic life.</p>
+                            <div class="text-center bg-blue-50 p-3 rounded-md">
+                                <p class="text-sm text-blue-800 font-semibold">Surface Coverage</p>
+                                <p class="text-2xl font-bold text-blue-600">~60% of Lake Area</p>
+                            </div>
+                        </div>
+                         <div class="species-card bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300" data-species="alligator">
+                            <h4 class="text-xl font-bold mb-2">Alternanthera philoxeroides</h4>
+                            <p class="text-sm font-semibold text-gray-500 mb-4">Alligator Weed</p>
+                            <p class="text-gray-600 text-sm mb-4">Like water hyacinth, it creates large floating mats that disrupt ecosystems and impact fish harvests.</p>
+                             <div class="text-center bg-blue-50 p-3 rounded-md">
+                                <p class="text-sm text-blue-800 font-semibold">Habitat Alteration</p>
+                                <p class="text-2xl font-bold text-blue-600">Forms Dense Mats</p>
+                            </div>
+                        </div>
+                        <div class="species-card bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300" data-species="lettuce">
+                            <h4 class="text-xl font-bold mb-2">Pistia stratiotes</h4>
+                            <p class="text-sm font-semibold text-gray-500 mb-4">Water Lettuce</p>
+                            <p class="text-gray-600 text-sm mb-4">Another free-floating invasive that contributes to water quality degradation and ecosystem imbalance.</p>
+                            <div class="text-center bg-blue-50 p-3 rounded-md">
+                                <p class="text-sm text-blue-800 font-semibold">Ecological Disruption</p>
+                                <p class="text-2xl font-bold text-blue-600">Degrades Water Quality</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impacts" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-5xl font-bold text-center text-gray-800 mb-4">The Ripple Effect</h2>
+                <p class="max-w-3xl mx-auto text-center text-gray-600 mb-16 text-lg">
+                    The encroachment by invasive species triggers a cascade of negative consequences. It's not just an environmental issue; it's a crisis that affects the city's water supply, biodiversity, public health, and economy. This diagram shows how the initial problem radiates outwards.
+                </p>
+                <div class="flex flex-col items-center space-y-8">
+                    <div class="bg-red-100 text-red-800 p-6 rounded-xl shadow-md text-center max-w-md">
+                        <h3 class="text-2xl font-bold">Core Problem</h3>
+                        <p>Invasive Species Encroachment & Pollution</p>
+                    </div>
+                    <div class="w-px h-12 bg-gray-300"></div>
+                    <div class="w-full flex flex-col md:flex-row justify-center items-center md:items-start md:space-x-8 space-y-8 md:space-y-0">
+                        <div class="text-center flex-1 max-w-sm">
+                            <div class="bg-blue-100 text-blue-800 p-6 rounded-xl shadow-md">
+                                <h4 class="text-xl font-bold">Hydrological Impacts</h4>
+                            </div>
+                            <div class="w-px h-6 bg-gray-300 mx-auto"></div>
+                            <div class="bg-gray-50 p-4 rounded-lg text-sm text-left space-y-2">
+                                <p>● Drastic reduction in groundwater levels.</p>
+                                <p>● Depleted surface water in lakes.</p>
+                                <p>● Altered lake shape, reducing storage capacity.</p>
+                            </div>
+                        </div>
+                        <div class="text-center flex-1 max-w-sm">
+                             <div class="bg-green-100 text-green-800 p-6 rounded-xl shadow-md">
+                                <h4 class="text-xl font-bold">Ecological Impacts</h4>
+                            </div>
+                            <div class="w-px h-6 bg-gray-300 mx-auto"></div>
+                            <div class="bg-gray-50 p-4 rounded-lg text-sm text-left space-y-2">
+                                <p>● Displacement of native plants and animals.</p>
+                                <p>● Oxygen depletion and fish kills.</p>
+                                <p>● Loss of biodiversity (birds, fish, insects).</p>
+                            </div>
+                        </div>
+                        <div class="text-center flex-1 max-w-sm">
+                            <div class="bg-yellow-100 text-yellow-800 p-6 rounded-xl shadow-md">
+                                <h4 class="text-xl font-bold">Socio-Economic Impacts</h4>
+                            </div>
+                            <div class="w-px h-6 bg-gray-300 mx-auto"></div>
+                            <div class="bg-gray-50 p-4 rounded-lg text-sm text-left space-y-2">
+                                <p>● Threats to farming and fishing livelihoods.</p>
+                                <p>● Increased mosquito breeding & health risks.</p>
+                                <p>● Loss of vital ecosystem services (clean air, flood control).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="recovery" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-5xl font-bold text-center text-gray-800 mb-4">The Path to Recovery</h2>
+                <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12 text-lg">
+                    Restoring Bangalore's lakes is a complex, long-term commitment requiring a multi-faceted approach. From engineering solutions and ecological restoration to policy reform and community action, discover the key strategies that offer a blueprint for a healthier, water-secure future.
+                </p>
+                <div class="w-full max-w-4xl mx-auto">
+                    <div class="flex border-b border-gray-300">
+                        <button class="tab-btn flex-1 py-3 px-2 text-sm md:text-base font-semibold text-gray-600 hover:bg-gray-100 transition-colors active" data-tab="removal">Invasive Removal</button>
+                        <button class="tab-btn flex-1 py-3 px-2 text-sm md:text-base font-semibold text-gray-600 hover:bg-gray-100 transition-colors" data-tab="rejuvenation">Lake Rejuvenation</button>
+                        <button class="tab-btn flex-1 py-3 px-2 text-sm md:text-base font-semibold text-gray-600 hover:bg-gray-100 transition-colors" data-tab="governance">Governance & Policy</button>
+                    </div>
+                    <div class="py-8">
+                        <div id="removal" class="tab-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Aquatic Deweeding</h4>
+                                    <p class="text-gray-600 text-sm">Mechanical harvesters and manual labor are used to physically remove floating weeds like water hyacinth, which also removes the vast quantities of pollutants they absorb.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Manual Uprooting</h4>
+                                    <p class="text-gray-600 text-sm">Highly effective for terrestrial species like *Prosopis* and *Senna*. Removing the entire root system, especially after monsoons, prevents re-germination.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Cut Rootstock Method</h4>
+                                    <p class="text-gray-600 text-sm">A technique used for species like *Lantana* that minimizes soil disturbance while effectively controlling the plant.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Long-Term Commitment</h4>
+                                    <p class="text-gray-600 text-sm">Experts stress that removal is not a one-time event. It requires a 4-5 year continuous effort, immediately followed by native species restoration.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="rejuvenation" class="tab-content hidden">
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Desilting & Dredging</h4>
+                                    <p class="text-gray-600 text-sm">Fundamental to restoring a lake's original depth and water-holding capacity by removing decades of accumulated silt and pollutants.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Sewage Treatment Plants (STPs)</h4>
+                                    <p class="text-gray-600 text-sm">Essential infrastructure to stop the flow of untreated sewage, a primary driver of pollution and invasive weed growth.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Constructed Wetlands</h4>
+                                    <p class="text-gray-600 text-sm">Ecological engineering that uses native plants to naturally filter pollutants, absorb heavy metals, and improve water quality before it enters the lake.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Native Green Buffers</h4>
+                                    <p class="text-gray-600 text-sm">Planting native, non-invasive trees and plants around lake peripheries (not on lakebeds) to control erosion, filter runoff, and create healthy habitats.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="governance" class="tab-content hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Centralized Custodianship</h4>
+                                    <p class="text-gray-600 text-sm">Establishing a single, empowered agency to oversee all lakes, ensuring coordinated action and eliminating fragmented administration.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Strengthened Legal Frameworks</h4>
+                                    <p class="text-gray-600 text-sm">Enforcing laws like the KTCDA Act, which prohibits new plantations on lakebeds, and addressing loopholes for pre-existing encroachments.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Community Involvement</h4>
+                                    <p class="text-gray-600 text-sm">Empowering local citizen groups, NGOs, and ward committees to participate in monitoring, restoration, and decision-making, fostering a sense of ownership.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg mb-2">Prioritizing Native Species</h4>
+                                    <p class="text-gray-600 text-sm">Shifting policy from simply increasing "green cover" to strategically planting ecologically suitable native species in the right places.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="mb-2">This interactive report is based on "An Examination of Lake Encroachment by Invasive and Evasive Tree Species in Bangalore's Urban Lakes."</p>
+            <p class="text-sm text-gray-400">Data synthesized from research by the Indian Institute of Science (IISc), Paani.Earth, and other cited sources.</p>
+        </div>
+    </footer>
+
+    <!-- Modal Structure -->
+    <div id="species-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-white w-full max-w-2xl rounded-lg shadow-2xl p-8 relative transform scale-95">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h3 id="modal-title" class="text-2xl font-bold mb-4 font-lora"></h3>
+            <p id="modal-description" class="text-gray-600 mb-4"></p>
+            <div id="modal-details" class="text-sm space-y-2"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urbanTransformationData = {
+                labels: ['1973', '2023'],
+                datasets: [
+                    {
+                        label: 'Vegetation',
+                        data: [68.27, 4.67],
+                        backgroundColor: 'rgba(34, 139, 34, 0.6)',
+                        borderColor: 'rgba(34, 139, 34, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Water Bodies',
+                        data: [3.4, 1.03],
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Built-up Area',
+                        data: [7.97, 93.3],
+                        backgroundColor: 'rgba(105, 105, 105, 0.6)',
+                        borderColor: 'rgba(105, 105, 105, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            };
+
+            const ctx = document.getElementById('urbanTransformationChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: urbanTransformationData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Bangalore\'s Landscape Change: 1973 vs. 2023 (%)',
+                            font: { size: 16, family: 'Lora' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Percentage of Land Area'
+                            },
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            const tabs = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(item => item.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const target = document.getElementById(tab.dataset.tab);
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    target.classList.remove('hidden');
+                });
+            });
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const speciesData = {
+                prosopis: {
+                    title: 'Prosopis juliflora (Mesquite)',
+                    description: 'An exotic, fast-growing, and highly adaptable species originally introduced for fuelwood and desertification control. It is now considered a "noxious weed" due to its severe negative impacts.',
+                    details: `
+                        <p><strong>Hydrological Impact:</strong> Consumes ~7 liters of water per tree per day, significantly depleting groundwater and surface water. Its extensive root system outcompetes native plants.</p>
+                        <p><strong>Ecological Impact:</strong> Forms dense, impenetrable thickets that reduce native plant diversity, diminish biodiversity, and serve as ideal breeding grounds for mosquitoes.</p>
+                        <p><strong>Prevalence:</strong> Covers nearly half (47-49%) of the lake area in catchments like Hesaraghatta and other lakebeds in Bengaluru Urban district.</p>
+                    `
+                },
+                acacia: {
+                    title: 'Acacia nilotica (Karijali)',
+                    description: 'Another high water-consuming tree, widely planted historically, that is now linked to severe declines in the water table and even reduced rainfall in surrounding districts.',
+                    details: `
+                        <p><strong>Hydrological Impact:</strong> High evapotranspiration demands lead to significant water consumption, contributing to a severe dip in groundwater levels.</p>
+                        <p><strong>Ecological Impact:</strong> Outcompetes native species for water and nutrients, transforming the local landscape and reducing available water for other flora.</p>
+                        <p><strong>Historical Context:</strong> Planted by the Karnataka Forest Department on lakebeds since the 1990s to provide fuelwood and prevent physical encroachment.</p>
+                    `
+                },
+                eucalyptus: {
+                    title: 'Eucalyptus globulus (Eucalyptus)',
+                    description: 'A species renowned for its exceptionally high water uptake, planted extensively under Social Forestry schemes in the 1980s.',
+                    details: `
+                        <p><strong>Hydrological Impact:</strong> Consumes an estimated 50 to 90 liters of water per day. Its deep roots (20-30 ft) extract water even during droughts, severely depleting underground water tables.</p>
+                        <p><strong>Ecological Impact:</strong> Transforms ecosystems by drying them out, making it difficult for native species to survive. Also a potential bioaccumulator of heavy metals.</p>
+                        <p><strong>Legacy Issue:</strong> The state government officially banned its cultivation in 2017 due to its proven negative impact on water resources.</p>
+                    `
+                },
+                hyacinth: {
+                    title: 'Eichhornia crassipes (Water Hyacinth)',
+                    description: 'A free-floating aquatic plant that is one of the most visible and damaging invasive species in Bangalore\'s polluted lakes.',
+                    details: `
+                        <p><strong>Ecological Impact:</strong> Forms dense mats that block sunlight and deplete dissolved oxygen, leading to fish kills and the death of native aquatic life.</p>
+                        <p><strong>Pollution Indicator:</strong> Its rampant growth is a clear sign of high nutrient pollution (sewage). It also bioconcentrates heavy metals like lead, chromium, and arsenic in its roots.</p>
+                        <p><strong>Prevalence:</strong> Has been observed to cover up to two-thirds of the surface of major lakes like Bellandur and Varthur.</p>
+                    `
+                },
+                alligator: {
+                    title: 'Alternanthera philoxeroides (Alligator Weed)',
+                    description: 'An invasive aquatic weed that forms large, dense floating mats, profoundly altering the dynamics of lake ecosystems.',
+                    details: `
+                        <p><strong>Ecological Impact:</strong> Similar to water hyacinth, it impedes water access, blocks sunlight, and negatively impacts native aquatic plants and animals.</p>
+                        <p><strong>Socio-Economic Impact:</strong> The dense mats can hinder fishing activities and reduce the harvest of aquatic resources, affecting local livelihoods.</p>
+                        <p><strong>Location:</strong> Notably observed creating significant problems in Varthur Lake.</p>
+                    `
+                },
+                lettuce: {
+                    title: 'Pistia stratiotes (Water Lettuce)',
+                    description: 'Another invasive free-floating aquatic plant that contributes to the degradation of water quality and ecological imbalance.',
+                    details: `
+                        <p><strong>Ecological Impact:</strong> Competes with native plants for resources and space, and its decomposition can further deplete oxygen levels in the water.</p>
+                        <p><strong>Habitat Disruption:</strong> Contributes to the overall choking of water bodies, making the habitat unsuitable for many native species.</p>
+                        <p><strong>Location:</strong> Found contributing to the ecological imbalance in Varthur Lake and other water bodies.</p>
+                    `
+                }
+            };
+            
+            const modal = document.getElementById('species-modal');
+            const closeModalBtn = document.getElementById('close-modal');
+            const modalOverlay = document.querySelector('.modal-overlay');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+            const modalDetails = document.getElementById('modal-details');
+
+            document.querySelectorAll('.species-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const species = card.dataset.species;
+                    const data = speciesData[species];
+                    
+                    modalTitle.textContent = data.title;
+                    modalDescription.textContent = data.description;
+                    modalDetails.innerHTML = data.details;
+
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    modal.querySelector('.modal-content').classList.remove('scale-95');
+                });
+            });
+
+            const closeModal = () => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.querySelector('.modal-content').classList.add('scale-95');
+            };
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            // Active nav link on scroll
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
